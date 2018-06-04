@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+
 {% block title_block %}
     {% if category %}
         {{ category }}
@@ -9,7 +11,7 @@
 
 {% block body_block %}
     <div class="row">
-        <div class="col-md-3 pt-4 mt-1 border-left border-right" id="sidebar-right">
+        <div class="col-sm-3 pt-4 mt-1 border-left border-right" id="sidebar-right">
             <p class="text-secondary">Categories</p>
             <ul class="list-group">
                 {% if categories %}
@@ -20,13 +22,29 @@
             </ul>
         </div>
 
-        <div class="col-md-9 pt-4">
+        <div class="col-sm-9 pt-4">
             <h3><a href="{% url 'marketplace:index' %}">Marketplace</a></h3>
             {% if no_of_postings > 0 %}
                 <p>{{ no_of_postings }} posting(s) found</p>
-                {% for posting in postings %}
-                    {{ posting.submission.name }}
-                {% endfor %}
+                <div class="row">
+                    {% for posting in postings %}
+
+                        <div class="card card-style ml-3 mb-3" style="width: 18rem;">
+                            <img class="card-img-top" src="{% static 'images/neuralnet.jpeg' %}" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ posting.submission.name }}</h5>
+                                <p class="card-text">
+                                    Price: ${{ posting.price }}<br>
+                                    {{ posting.submission.no_of_entries }} {{ posting.submission.data_type }}s<br>
+                                    by {{ posting.user.user.username }}
+                                </p>
+                                <a href="#" class="btn btn-secondary btn-block disabled">Buy</a>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
             {% else %}
                 <p>No postings available for this category.</p>
             {% endif %}
