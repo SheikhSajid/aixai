@@ -24,7 +24,7 @@ class Posting(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
-    postings = models.ManyToManyField(Posting, null=True, blank=True)
+    postings = models.ManyToManyField(Posting)
 
     class Meta:
         verbose_name_plural = 'categories'

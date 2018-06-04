@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title_block %}
-My Datasets
+    My Datasets
 {% endblock %}
 
 {% block body_block %}
@@ -21,25 +21,39 @@ My Datasets
         <div class="col-md-9" id="submission-form">
             <div class="container pt-4">
                 <h3>Please select operations:</h3>
-                <form>
+                <form action="{% url 'upload' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-check-label" for="name">Give your data set a name</label>
+                        <input class="form-control" type="text" placeholder="name" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-check-label" for="no-entries">Number of entries</label>
+                        <input class="form-control" type="text" placeholder="e.g. 10000" id="no-entries"
+                               name="no-entries" pattern="[0-9]+" required title="Enter a number(without commas)">
+                    </div>
+
                     <div class="form-group">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="increase-size">
+                            <input class="form-check-input" type="checkbox" value="True" name="increase-size"
+                                   id="increase-size">
                             <label class="form-check-label" for="increase-size">
                                 Increase Dataset Size
                             </label>
-                            <input class="form-control" type="text" placeholder="5X" id="scale" disabled>
+                            <input class="form-control" type="text" placeholder="5X" id="scale" name="increase-by"
+                                   disabled>
                             <small class="form-text text-muted">*A max. of 10X increase in dataset is allowed.</small>
                         </div>
                     </div>
 
                     <div class="form-group border p-2">
-                        <label for="exampleFormControlFile1">Upload Dataset 1</label>
+                        <label for="datasetfile1">Upload Dataset 1</label>
                         <input type="file" class="form-control-file" id="datasetfile1" multiple="false">
                     </div>
 
                     <div class="form-group border p-2 bg-disabled text-secondary" id="fileupload2">
-                        <label for="exampleFormControlFile1">Upload Dataset 2</label>
+                        <label for="datasetfile2">Upload Dataset 2</label>
                         <input type="file" class="form-control-file" id="datasetfile2" disabled>
                     </div>
 
@@ -49,7 +63,9 @@ My Datasets
                             <label class="form-check-label" for="combine">
                                 Combine multiple datasets
                             </label>
-                            <small class="form-text text-muted">*A max. of 500MB (.jpg) image dataset in zip file is allowed.</small>
+                            <small class="form-text text-muted">*A max. of 500MB (.jpg) image dataset in zip file is
+                                allowed.
+                            </small>
                         </div>
                     </div>
 
@@ -61,11 +77,11 @@ My Datasets
     </div>
 
     <script>
-        document.getElementById('increase-size').onchange = function() {
+        document.getElementById('increase-size').onchange = function () {
             document.getElementById('scale').disabled = !this.checked;
         };
 
-        document.getElementById('combine').onchange = function() {
+        document.getElementById('combine').onchange = function () {
             document.getElementById('datasetfile2').disabled = !this.checked;
 
             var elem = document.getElementById('fileupload2');

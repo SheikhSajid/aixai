@@ -1,7 +1,12 @@
+import datetime
 from django.shortcuts import render
 from dataset_uploader.models import Submission
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from . import forms
+
+
 # from django.http import HttpResponse
 
 
@@ -9,9 +14,27 @@ from . import forms
 
 @login_required
 def index(request):
+    if request.method == 'POST':
+        increase_by = request.POST.get('increase-by') or 1
+        name = request.POST.get('name')
+        no_of_entries = int(request.POST.get('no-entries'))
+        date_of_submission = datetime.datetime
+
+        user = User.objects.filter(id=request.user.id).get()
+        profile = user.userprofileinfo
+
+        submission = Submission(user_profile=profile, data_type="Image", no_of_entries=no_of_entries, name=name,
+                                date_of_submission=date_of_submission, increase_by=increase_by)
+
+        submission.save()
+
+        return HttpResponseRedirect('upload')
+
     submissions = Submission.objects.order_by('no_of_entries')
     my_dict = {'submissions': submissions}
+
     return render(request, 'dataset_uploader/index.html', context=my_dict)
+
 
 @login_required
 def new_submission(request):
