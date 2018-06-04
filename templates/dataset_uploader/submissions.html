@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title_block %}
+    My Submissions
+{% endblock %}
+
+{% block body_block %}
+    {% if no_of_submissions > 0 %}
+        <table class="table">
+            <thead>
+            <th scope="col">Name</th>
+            <th scope="col">Entries</th>
+            <th scope="col">Type of Data</th>
+            <th scope="col">Date</th>
+            <th scope="col">Increase</th>
+            <th scope="col">Status</th>
+            <th scope="col">Marketplace</th>
+            </thead>
+
+            <tbody>
+
+            {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.name }}</td>
+                    <td>{{ submission.no_of_entries }}</td>
+                    <td>{{ submission.data_type }}</td>
+                    <td>{{ submission.date_of_submission }}</td>
+                    <td>{{ submission.increase_by }}</td>
+                    <td>{{ submission.status }}</td>
+                    {% if submission.posting %}
+                        <td>Posted</td>
+                    {% else %}
+                        <td>
+                            <form class="form-inline" action="{% url 'submissions' %}" method="post" >
+                                {% csrf_token %}
+                                $
+                                <div class="form-group">
+                                    <input type="text" class="form-control mr-1" pattern="[0-9]+" name="price" placeholder="Price">
+                                </div>
+                                <input type="hidden" id="custId" name="submission_id" value="{{ submission.id }}">
+                                <button type="submit" class="btn btn-primary">Post</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+
+    {% else %}
+        <p>You have not uploaded any data-sets yet.</p>
+    {% endif %}
+{% endblock %}
+

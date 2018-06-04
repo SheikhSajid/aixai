@@ -24,7 +24,7 @@ from marketplace import views as mp_views
 urlpatterns = [
     url(r'^$', mp_views.index, name='index'),
     url(r'^upload/', du_views.index, name='upload'),
-    url(r'^submissions/', du_views.submissions, name='submissions'),
+    url(r'^submissions/', du_views.my_submissions, name='submissions'),
     url(r'^logout/', mp_views.user_logout, name='logout'),
     url(r'^login/', mp_views.user_login, name='login'),
     url(r'^admin/', admin.site.urls),

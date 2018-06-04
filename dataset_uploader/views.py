@@ -1,6 +1,7 @@
 import datetime
 from django.shortcuts import render
 from dataset_uploader.models import Submission
+from marketplace.models import Posting
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -34,6 +35,27 @@ def index(request):
     my_dict = {'submissions': submissions}
 
     return render(request, 'dataset_uploader/index.html', context=my_dict)
+
+
+@login_required
+def my_submissions(request):
+    if request.method == 'POST':
+        price = request.POST.get('price')
+        submission_id = request.POST.get('submission_id')
+        sub = Submission.objects.filter(id=submission_id).get()
+        post = Posting(submission=sub, price=price, user=request.user.userprofileinfo)
+        post.save()
+        sub.posting = post
+        sub.save()
+
+        return HttpResponseRedirect('/submissions/')
+
+    profile = request.user.userprofileinfo;
+    submissions = profile.submission_set.all()
+    no_of_submissions = len(submissions)
+
+    return render(request, 'dataset_uploader/submissions.html',
+                  {'submissions': submissions, 'no_of_submissions': no_of_submissions})
 
 
 @login_required
