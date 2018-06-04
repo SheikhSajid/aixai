@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+    {% if registered %}
+        <h1>You are already registered and logged-in.</h1>
+    {% else %}
+        <h1>Registration is currently invite only.</h1>
+    {% endif %}
+{% endblock %}

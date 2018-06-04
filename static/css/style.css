@@ -1,0 +1,39 @@
+.navbar {
+    box-shadow: 2px 2px 5px #1D427F;
+    opacity: 0.8;
+}
+
+.nav-item {
+    font-size: 1.4rem;
+    color: rgb(68, 84, 106);
+}
+
+#sidebar-right {
+    min-height: 100vh;
+    overflow: auto;
+}
+
+.bg-disabled {
+    background-color: #E8EBEE;
+}
+
+.btn-primary {
+    background-color: #1D427F;
+    border-color: #1D427F;
+}
+
+.btn {
+    border-radius: 0;
+}
+
+.text-primary-custom {
+    color: #1D427F;
+}
+
+.list-group-item {
+    border: none;
+}
+
+* {
+    color: #1D427F;
+}
