@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from marketplace.models import Category, Posting
+from django.contrib.auth.models import User
 
 
 # Create your views here.
@@ -16,6 +17,16 @@ def index(request):
 
 def post_description(request):
     return render(request, 'marketplace/post_description.html')
+
+
+def user_profile(request, **kwargs):
+    username = kwargs['username']
+    user = User.objects.filter(username=username).first()
+    profile = user.userprofileinfo
+    postings = profile.posting_set.all()
+    no_of_postings = len(postings)
+    context = { 'username': username, 'about': profile.about, 'postings': postings, 'no_of_postings': no_of_postings }
+    return render(request, 'marketplace/user_profile.html', context)
 
 
 @login_required

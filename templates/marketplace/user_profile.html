@@ -2,28 +2,30 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    {% if category %}
-        {{ category }}
+    {% if name %}
+        {{ name }}
     {% else %}
-        Marketplace | aiXai
+        Profile | aiXai
     {% endif %}
 {% endblock %}
 
 {% block body_block %}
     <div class="row">
         <div class="col-sm-3 pt-4 mt-1 border-left border-right" id="sidebar-right">
-            <p class="text-secondary">Categories</p>
-            <ul class="list-group">
-                {% if categories %}
-                    {% for category in categories %}
-                        <li class="list-group-item"><a href="/marketplace/{{ category.name }}">{{ category.name }}</a></li>
-                    {% endfor %}
-                {% endif %}
-            </ul>
+            <div class="card text-center">
+                <img class="card-img-top" src="{% static 'images/profile.png' %}" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title">{{ username }}</h5>
+                    <p class="card-text">{{ about }}</p>
+                </div>
+                <div class="card-body">
+                    <a href="#" class="btn btn-primary btn-block">Message</a>
+                </div>
+            </div>
         </div>
 
         <div class="col-sm-9 pt-4">
-            <h3><a href="{% url 'marketplace:index' %}">Marketplace</a></h3>
+            <h3><a href="{% url 'marketplace:index' %}">Postings by the user:</a></h3>
             {% if no_of_postings > 0 %}
                 <p>{{ no_of_postings }} posting(s) found</p>
                 <div class="row">
@@ -46,10 +48,9 @@
 
                 </div>
             {% else %}
-                <p>No postings available for this category.</p>
+                <p>No postings available</p>
             {% endif %}
 
         </div>
     </div>
-
 {% endblock %}

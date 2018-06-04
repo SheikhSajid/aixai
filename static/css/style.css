@@ -38,6 +38,10 @@
     max-width: 250px;
 }
 
+#sidebar-right .card {
+    border: none;
+}
+
 * {
     color: #1D427F;
 }
