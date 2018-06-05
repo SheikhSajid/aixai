@@ -31,13 +31,26 @@
                         <td>Posted</td>
                     {% else %}
                         <td>
-                            <form class="form-inline" action="{% url 'submissions' %}" method="post" >
+                            <form action="{% url 'submissions' %}" method="post" >
                                 {% csrf_token %}
-                                $
-                                <div class="form-group">
-                                    <input type="text" class="form-control mr-1" pattern="[0-9]+" name="price" placeholder="Price">
+                                <div class="form-row">
+                                    $
+                                    <div class="form-group col-md-5">
+                                        <input type="text" class="form-control mr-1" pattern="[0-9]+" name="price" placeholder="Price" required>
+                                    </div>
+                                    <input type="hidden" id="custId" name="submission_id" value="{{ submission.id }}">
+
+                                    <div class="form-group col-md-5">
+                                        <select name="category-id" class="form-control" required>
+                                            <option selected disabled="">Category</option>
+                                            {% for category in categories %}
+                                                <option value="{{ category.id }}">{{ category }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
                                 </div>
-                                <input type="hidden" id="custId" name="submission_id" value="{{ submission.id }}">
+
                                 <button type="submit" class="btn btn-primary">Post</button>
                             </form>
                         </td>
@@ -51,5 +64,6 @@
     {% else %}
         <p>You have not uploaded any data-sets yet.</p>
     {% endif %}
+    <a class="btn btn-primary" href="{% url 'dataset_uploader:index' %}">Create New Submission</a>
 {% endblock %}
 
