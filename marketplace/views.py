@@ -47,7 +47,7 @@ def user_login(request):
                 login(request, user)
                 return HttpResponseRedirect(reverse('index'))
             else:
-                return HttpResponse("Account not active")
+                return render(request, 'login.html', {'error': 'Account not active'})
         else:
             return render(request, 'login.html', {'error': 'Invalid username/password'})
     else:
