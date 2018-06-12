@@ -1,10 +1,11 @@
 import datetime
+import re
 from django.shortcuts import render
 from dataset_uploader.models import Submission
 from marketplace.models import Posting, Category
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from . import forms
 
 
@@ -39,6 +40,19 @@ def index(request):
 
 @login_required
 def my_submissions(request):
+    if request.method == 'PATCH':
+        print(request.body)
+        data_as_str = request.body.decode('utf-8').replace('+', ' ')
+        regex = re.match('^edit-submission-id=(\d+)&name=(.+)$', data_as_str)
+        id = regex.group(1)
+        new_name = regex.group(2)
+
+        submission = Submission.objects.get(pk=id)
+        submission.name = new_name
+        submission.save()
+
+        return HttpResponse(status=200)
+
     if request.method == 'POST':
         price = request.POST.get('price')
         category_id = request.POST.get('category-id')
@@ -56,7 +70,7 @@ def my_submissions(request):
 
         return HttpResponseRedirect('/submissions/')
 
-    profile = request.user.userprofileinfo;
+    profile = request.user.userprofileinfo
     submissions = profile.submission_set.all()
     no_of_submissions = len(submissions)
     categories = Category.objects.all()

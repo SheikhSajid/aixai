@@ -2,8 +2,8 @@
 {% load staticfiles %}
 
 {% block title_block %}
-    {% if name %}
-        {{ name }}
+    {% if username %}
+        {{ username }}
     {% else %}
         Profile | aiXai
     {% endif %}
@@ -11,45 +11,97 @@
 
 {% block body_block %}
     <div class="row">
+        {# left sidebar #}
         <div class="col-sm-3 pt-4 mt-1 border-left border-right" id="sidebar-right">
             <div class="card text-center">
                 <img class="card-img-top" src="{% static 'images/profile.png' %}" alt="Card image cap">
                 <div class="card-body">
-                    <h5 class="card-title">{{ username }}</h5>
-                    <p class="card-text">{{ about }}</p>
+                    <h5 class="card-title" id="username">{{ username }}</h5>
                 </div>
-                <div class="card-body">
-                    <a href="#" class="btn btn-primary btn-block">Message</a>
-                </div>
+
+                {% if user.is_authenticated and user.username != username %}
+                    <div class="card-body">
+                        <a href="#" class="btn btn-primary btn-block">Message</a>
+                        <a href="#" class="btn btn-primary btn-block">Follow</a>
+                    </div>
+                {% endif %}
             </div>
         </div>
 
+        {# main content area #}
         <div class="col-sm-9 pt-4">
-            <h3><a href="{% url 'marketplace:index' %}">Postings by the user:</a></h3>
-            {% if no_of_postings > 0 %}
-                <p>{{ no_of_postings }} posting(s) found</p>
-                <div class="row">
-                    {% for posting in postings %}
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#marketplace" role="tab"
+                       aria-controls="home" aria-selected="true">Marketplace</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#posts" role="tab"
+                       aria-controls="profile" aria-selected="false">Posts</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="marketplace" role="tabpanel" aria-labelledby="home-tab">
+                    {% if no_of_postings > 0 %}
+                        <p>{{ no_of_postings }} offer(s) found</p>
+                        <div class="row">
+                            {% for posting in postings %}
 
-                        <div class="card card-style ml-3 mb-3" style="width: 18rem;">
-                            <img class="card-img-top" src="{% static 'images/neuralnet.jpeg' %}" alt="Card image cap">
+                                <div class="card card-style ml-3 mb-3" style="width: 18rem;">
+                                    <img class="card-img-top" src="{% static 'images/neuralnet.jpeg' %}"
+                                         alt="Card image cap">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ posting.submission.name }}</h5>
+                                        <p class="card-text">
+                                            Price: ${{ posting.price }}<br>
+                                            {{ posting.submission.no_of_entries }} {{ posting.submission.data_type }}s<br>
+                                            by <a
+                                                href="/user/{{ posting.user.user.username }}">{{ posting.user.user.username }}</a>
+                                        </p>
+                                        <a href="#" class="btn btn-secondary btn-block disabled">Buy</a>
+                                    </div>
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+                    {% else %}
+                        <p>No postings available</p>
+                    {% endif %}
+                </div>
+
+                <div class="tab-pane fade" id="posts" role="tabpanel" aria-labelledby="profile-tab">
+                    {% if user.is_authenticated and user.username == username %}
+                        <div class="card mt-3">
                             <div class="card-body">
-                                <h5 class="card-title">{{ posting.submission.name }}</h5>
-                                <p class="card-text">
-                                    Price: ${{ posting.price }}<br>
-                                    {{ posting.submission.no_of_entries }} {{ posting.submission.data_type }}s<br>
-                                    by <a href="/user/{{ posting.user.user.username }}">{{ posting.user.user.username }}</a>
-                                </p>
-                                <a href="#" class="btn btn-secondary btn-block disabled">Buy</a>
+                                <form id="new-status-form">
+                                    <div class="form-group">
+                                        <textarea name="status-body" class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                                  placeholder="What's on your mind?"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary ml-auto">Post</button>
+                                </form>
                             </div>
                         </div>
+                    {% endif %}
 
-                    {% endfor %}
-
+                    {% if no_of_statuses > 0 %}
+                        {% for status in statuses %}
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    {{ username }} <span class="text-muted">{{ status.created_at }}</span>
+                                </div>
+                                <div class="card-body">
+                                    {{ status.body }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        No status updates from this user
+                    {% endif %}
                 </div>
-            {% else %}
-                <p>No postings available</p>
-            {% endif %}
+            </div>
+
 
         </div>
     </div>

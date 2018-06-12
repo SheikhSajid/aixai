@@ -5,65 +5,93 @@
 {% endblock %}
 
 {% block body_block %}
-    {% if no_of_submissions > 0 %}
-        <table class="table">
-            <thead>
-            <th scope="col">Name</th>
-            <th scope="col">Entries</th>
-            <th scope="col">Type of Data</th>
-            <th scope="col">Date</th>
-            <th scope="col">Increase</th>
-            <th scope="col">Status</th>
-            <th scope="col">Marketplace</th>
-            </thead>
+    <div id="submissions-table">
+        {% if no_of_submissions > 0 %}
+            <table class="table">
+                <thead>
+                <th scope="col">Name</th>
+                <th scope="col">Entries</th>
+                <th scope="col">Type of Data</th>
+                <th scope="col">Date</th>
+                <th scope="col">Increase</th>
+                <th scope="col">Status</th>
+                <th scope="col">Marketplace</th>
+                <th scope="col">Actions</th>
+                </thead>
 
-            <tbody>
+                <tbody>
 
-            {% for submission in submissions %}
-                <tr>
-                    <td>{{ submission.name }}</td>
-                    <td>{{ submission.no_of_entries }}</td>
-                    <td>{{ submission.data_type }}</td>
-                    <td>{{ submission.date_of_submission }}</td>
-                    <td>{{ submission.increase_by }}</td>
-                    <td>{{ submission.status }}</td>
-                    {% if submission.posting %}
-                        <td>Posted</td>
-                    {% else %}
+                {% for submission in submissions %}
+                    <tr>
+                        <td>{{ submission.name }}</td>
+                        <td>{{ submission.no_of_entries }}</td>
+                        <td>{{ submission.data_type }}</td>
+                        <td>{{ submission.date_of_submission }}</td>
+                        <td>{{ submission.increase_by }}</td>
+                        <td>{{ submission.status }}</td>
+                        {% if submission.posting %}
+                            <td>Posted</td>
+                        {% else %}
+                            <td>
+                                <form action="{% url 'submissions' %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-row">
+                                        $
+                                        <div class="form-group col-md-5">
+                                            <input type="text" class="form-control mr-1" pattern="[0-9]+" name="price"
+                                                   placeholder="Price" required>
+                                        </div>
+                                        <input type="hidden" id="custId" name="submission_id"
+                                               value="{{ submission.id }}">
+
+                                        <div class="form-group col-md-5">
+                                            <select name="category-id" class="form-control" required>
+                                                <option selected disabled="">Category</option>
+                                                {% for category in categories %}
+                                                    <option value="{{ category.id }}">{{ category }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Post</button>
+                                </form>
+                            </td>
+                        {% endif %}
                         <td>
-                            <form action="{% url 'submissions' %}" method="post" >
-                                {% csrf_token %}
-                                <div class="form-row">
-                                    $
-                                    <div class="form-group col-md-5">
-                                        <input type="text" class="form-control mr-1" pattern="[0-9]+" name="price" placeholder="Price" required>
-                                    </div>
-                                    <input type="hidden" id="custId" name="submission_id" value="{{ submission.id }}">
-
-                                    <div class="form-group col-md-5">
-                                        <select name="category-id" class="form-control" required>
-                                            <option selected disabled="">Category</option>
-                                            {% for category in categories %}
-                                                <option value="{{ category.id }}">{{ category }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">Post</button>
-                            </form>
+                            <button class="btn btn-link" data-toggle="modal" data-target="#modal{{ submission.id }}">
+                                Edit
+                            </button>
+                            <button class="btn btn-link text-danger">delete</button>
                         </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
 
-            </tbody>
-        </table>
+                        <div class="modal" id="modal{{ submission.id }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-body text-right">
+                                        <form id="edit-submission{{ submission.id }}">
+                                            <div class="form-group mb-0">
+                                                <input class="form-control" type="hidden" name="edit-submission-id"
+                                                       value="{{ submission.id }}">
+                                                <input class="form-control" type="text" placeholder="name" name="name">
+                                                <button type="submit" class="btn btn-primary mt-2">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </tr>
+                {% endfor %}
 
-    {% else %}
-        <p>You have not uploaded any data-sets yet.</p>
-    {% endif %}
-    <a class="btn btn-primary" href="{% url 'dataset_uploader:index' %}">Create New Submission</a>
+                </tbody>
+            </table>
+
+        {% else %}
+            <p>You have not uploaded any data-sets yet.</p>
+        {% endif %}
+        <a class="btn btn-primary" href="{% url 'dataset_uploader:index' %}">Create New Submission</a>
+    </div>
 {% endblock %}
 

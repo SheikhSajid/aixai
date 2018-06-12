@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
-from marketplace.models import Category, Posting
+from marketplace.models import Category, Posting, Status
 from django.contrib.auth.models import User
 
 
@@ -12,7 +12,8 @@ from django.contrib.auth.models import User
 def index(request):
     categories = Category.objects.all()
     postings = Posting.objects.all()
-    return render(request, 'marketplace/index.html', {'categories': categories, 'no_of_postings': len(postings), 'postings': postings})
+    return render(request, 'marketplace/index.html',
+                  {'categories': categories, 'no_of_postings': len(postings), 'postings': postings})
 
 
 def post_description(request):
@@ -20,12 +21,26 @@ def post_description(request):
 
 
 def user_profile(request, **kwargs):
+    if request.method == 'POST':
+        status_body = request.POST.get('status-body')
+        Status.objects.create(body=status_body, user_profile=request.user.userprofileinfo)
+
+        return HttpResponse(status=200)
+
     username = kwargs['username']
     user = User.objects.filter(username=username).first()
     profile = user.userprofileinfo
+
     postings = profile.posting_set.all()
     no_of_postings = len(postings)
-    context = { 'username': username, 'about': profile.about, 'postings': postings, 'no_of_postings': no_of_postings }
+
+    statuses = profile.statuses.all()
+    no_of_statuses = len(statuses)
+
+    # my_username = request.
+
+    context = {'username': username, 'about': profile.about, 'postings': postings, 'no_of_postings': no_of_postings,
+               'statuses': statuses, 'no_of_statuses': no_of_statuses}
     return render(request, 'marketplace/user_profile.html', context)
 
 
@@ -60,6 +75,7 @@ def posts_of_category(request, **kwargs):
     all_categories = Category.objects.all()
     category_obj = Category.objects.filter(name=requested_category).first()
     postings = category_obj.postings.all()
-    context = {'categories': all_categories, 'category': requested_category, 'postings': postings, 'no_of_postings': len(postings)}
+    context = {'categories': all_categories, 'category': requested_category, 'postings': postings,
+               'no_of_postings': len(postings)}
     print(len(postings))
     return render(request, 'marketplace/index.html', context)

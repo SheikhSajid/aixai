@@ -31,3 +31,18 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Status(models.Model):
+    body = models.CharField(max_length=240)
+    user_profile = models.ForeignKey(UserProfileInfo, related_name='statuses')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    likes = models.ManyToManyField(UserProfileInfo, related_name='likers')
+    no_of_likes = models.IntegerField(default=0)
+
+    class Meta:
+        verbose_name_plural = 'statuses'
+
+    def __str__(self):
+        return self.body
