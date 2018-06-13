@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User)
 
-    about = models.CharField(max_length=500)
+    about = models.CharField(max_length=500, blank=True, null=True)
     profile_pic = models.ImageField(upload_to='profile_pictures', blank=True)
 
     def __str__(self):

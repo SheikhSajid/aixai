@@ -9,11 +9,6 @@ from django.http import HttpResponseRedirect, HttpResponse
 from . import forms
 
 
-# from django.http import HttpResponse
-
-
-# Create your views here.
-
 @login_required
 def index(request):
     if request.method == 'POST':
@@ -52,8 +47,7 @@ def my_submissions(request):
         submission.save()
 
         return HttpResponse(status=200)
-
-    if request.method == 'POST':
+    elif request.method == 'POST':
         price = request.POST.get('price')
         category_id = request.POST.get('category-id')
         category = Category.objects.filter(id=category_id).first()
@@ -69,6 +63,13 @@ def my_submissions(request):
         category.postings.add(post)
 
         return HttpResponseRedirect('/submissions/')
+    elif request.method == 'DELETE':
+        body_str = request.body.decode('utf-8')
+        id = re.match('^id=(\d+)$', body_str).group(1)
+
+        Submission.objects.get(pk=id).delete()
+
+        return HttpResponse(status=200)
 
     profile = request.user.userprofileinfo
     submissions = profile.submission_set.all()

@@ -32,7 +32,7 @@ $(document).ready(() => {
     });
     // end session cookie data setup.
 
-    $('#submissions-table').on('submit', function (event) {
+    $('.modal').on('submit', function (event) {
         event.preventDefault();
         let formData = $(event.target).serializeArray();
         let data = {};
@@ -42,12 +42,30 @@ $(document).ready(() => {
 
         console.log(data);
 
+        let submissionId = data['edit-submission-id'];
+        let newName = data.name;
+
+        $(`#modal${submissionId}`).modal('hide');
+
         $.ajax({
             method: 'PATCH',
             data,
             url: '/submissions/',
-            success: () => console.log("Patch request sent")
+            success: () => $(`#submission-name-${submissionId}`).html(newName),
+            error: () => alert('Oops! Could not change the submission record. Please try again later.')
         })
+    });
+
+    $('.text-danger').on('click', function (event) {
+       let buttonId = event.target.id.split('-').pop();
+
+       $.ajax({
+           method: 'DELETE',
+           data: { id: buttonId },
+           url: '/submissions/',
+           success: () => $(`#submission-${buttonId}`).remove(),
+           error() { alert('Delete operation failed') }
+       })
     });
 
 

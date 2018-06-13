@@ -22,8 +22,8 @@
                 <tbody>
 
                 {% for submission in submissions %}
-                    <tr>
-                        <td>{{ submission.name }}</td>
+                    <tr id="submission-{{ submission.id }}">
+                        <td id="submission-name-{{ submission.id }}">{{ submission.name }}</td>
                         <td>{{ submission.no_of_entries }}</td>
                         <td>{{ submission.data_type }}</td>
                         <td>{{ submission.date_of_submission }}</td>
@@ -63,7 +63,7 @@
                             <button class="btn btn-link" data-toggle="modal" data-target="#modal{{ submission.id }}">
                                 Edit
                             </button>
-                            <button class="btn btn-link text-danger">delete</button>
+                            <button id="delete-submission-{{ submission.id }}" class="btn btn-link text-danger">delete</button>
                         </td>
 
                         <div class="modal" id="modal{{ submission.id }}">

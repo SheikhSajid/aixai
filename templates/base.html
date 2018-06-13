@@ -24,6 +24,7 @@
                 <li class="nav-item active"><a class="nav-link" href="{% url 'marketplace:index' %}">Marketplace</a></li>
 
                 {% if user.is_authenticated %}
+                    <li class="nav-item active"><a class="nav-link" href="/user/{{ user.username }}">My Account</a></li>
                     <li class="nav-item active"><a class="nav-link" href="{% url 'submissions' %}">Submissions</a></li>
                     <li class="nav-item active"><a class="nav-link" href="{% url 'upload' %}">Upload</a></li>
                     <li class="nav-item active"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>

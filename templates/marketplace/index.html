@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% load get_item %}
 
 {% block title_block %}
     {% if category %}
@@ -35,7 +36,7 @@
                                 <h5 class="card-title">{{ posting.submission.name }}</h5>
                                 <p class="card-text">
                                     Price: ${{ posting.price }}<br>
-                                    {{ posting.submission.no_of_entries }} {{ posting.submission.data_type }}s<br>
+                                    {{ no_of_entries|get_item:posting.id }} {{ posting.submission.data_type }}s<br>
                                     by <a href="/user/{{ posting.user.user.username }}">{{ posting.user.user.username }}</a>
                                 </p>
                                 <a href="#" class="btn btn-secondary btn-block disabled">Buy</a>
