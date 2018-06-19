@@ -1,3 +1,7 @@
+function getRandomInt(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+}
+
 $(document).ready(() => {
     // setup session cookie data. This is Django-related
     function getCookie(name) {
@@ -40,8 +44,6 @@ $(document).ready(() => {
         for (let entry of formData)
             data[entry.name] = entry.value;
 
-        console.log(data);
-
         let submissionId = data['edit-submission-id'];
         let newName = data.name;
 
@@ -53,19 +55,22 @@ $(document).ready(() => {
             url: '/submissions/',
             success: () => $(`#submission-name-${submissionId}`).html(newName),
             error: () => alert('Oops! Could not change the submission record. Please try again later.')
-        })
+        });
+
     });
 
     $('.text-danger').on('click', function (event) {
-       let buttonId = event.target.id.split('-').pop();
+        let buttonId = event.target.id.split('-').pop();
 
-       $.ajax({
-           method: 'DELETE',
-           data: { id: buttonId },
-           url: '/submissions/',
-           success: () => $(`#submission-${buttonId}`).remove(),
-           error() { alert('Delete operation failed') }
-       })
+        $.ajax({
+            method: 'DELETE',
+            data: {id: buttonId},
+            url: '/submissions/',
+            success: () => $(`#submission-${buttonId}`).remove(),
+            error() {
+                alert('Delete operation failed')
+            }
+        })
     });
 
 
@@ -110,6 +115,43 @@ $(document).ready(() => {
             success: () => $('#posts').append(newStatusElement)
         })
 
+    });
+
+    $('#new-submission').submit(function (event) {
+        event.preventDefault();
+        $('#new-submission-button').hide();
+        $('#uploading-gif').show();
+        let formData = $(event.target).serializeArray();
+        let data = {};
+
+        for (let entry of formData)
+            data[entry.name] = entry.value;
+
+        let file = document.getElementById('datasetfile1').files[0];
+
+        const filename = getRandomInt(100, 999) + '.' + file.name.split('.').pop();
+        data.filename = filename;
+
+        const uploadTask = storage.ref(`${data.username}/${filename}`).put(file);
+
+        uploadTask.on('state_changed', snapshot => {
+            let percentage = Math.round(( snapshot.bytesTransferred / snapshot.totalBytes ) * 100);
+
+            $('#upload-status').html(`Uploading: ${percentage}%`);
+
+            if (percentage === 100) {
+                $.ajax({
+                    method: 'POST',
+                    data,
+                    url: '/upload/',
+                    success: () => window.location.href = "/submissions/",
+                    error: () => {
+                        alert('Oops! Could not create new submission entry on server.');
+                        $('#uploading-gif').hide();
+                    }
+                });
+            }
+        });
     })
 });
 

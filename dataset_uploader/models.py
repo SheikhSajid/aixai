@@ -12,6 +12,7 @@ class Submission(models.Model):
     name = models.CharField(max_length=264)
     date_of_submission = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=264, default="Under Progress")
+    filename = models.CharField(max_length=120, null=True, blank=True)
 
     increase_by = models.CharField(max_length=3, default='1X')
 

@@ -15,13 +15,14 @@ def index(request):
         increase_by = request.POST.get('increase-by') or 1
         name = request.POST.get('name')
         no_of_entries = int(request.POST.get('no-entries'))
+        filename = request.POST.get('filename')
         date_of_submission = datetime.datetime
 
         user = User.objects.filter(id=request.user.id).get()
         profile = user.userprofileinfo
 
         submission = Submission(user_profile=profile, data_type="Image", no_of_entries=no_of_entries, name=name,
-                                date_of_submission=date_of_submission, increase_by=increase_by)
+                                date_of_submission=date_of_submission, increase_by=increase_by, filename=filename)
 
         submission.save()
 
