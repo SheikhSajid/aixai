@@ -148,6 +148,7 @@ $(document).ready(() => {
                     error: () => {
                         alert('Oops! Could not create new submission entry on server.');
                         $('#uploading-gif').hide();
+                        $('#new-submission-button').show();
                     }
                 });
             }
